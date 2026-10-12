@@ -91,6 +91,10 @@ Demo accounts: `1` to `5` (the password is the same as the username). IT account
 |---|---|
 | ![Web classic](docs/screenshots/web-classic.png) | ![Web modern](docs/screenshots/web-modern.png) |
 
+The modern web view follows your device's light or dark setting:
+
+![Web modern, dark mode](docs/screenshots/web-modern-dark.png)
+
 ---
 
 ### Thank you for checking out our repo!

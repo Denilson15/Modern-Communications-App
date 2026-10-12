@@ -202,7 +202,7 @@ public class ModernGUI extends GUI {
 
 		JButton action;
 		if (auditMode) {
-			action = Theme.button("Select user to audit", Theme.AUDIT, Theme.SIDEBAR);
+			action = Theme.button("Select user to audit", Theme.AUDIT, Color.WHITE);
 			action.addActionListener(e -> {
 				String username = JOptionPane.showInputDialog(mainFrame, "Enter username:", "Select User",
 						JOptionPane.PLAIN_MESSAGE);
@@ -320,7 +320,7 @@ public class ModernGUI extends GUI {
 			JLabel note = new JLabel("Read-only audit view");
 			note.setFont(Theme.BODY);
 			note.setForeground(Theme.MUTED);
-			JButton export = Theme.button("Export chat log", Theme.AUDIT, Theme.SIDEBAR);
+			JButton export = Theme.button("Export chat log", Theme.AUDIT, Color.WHITE);
 			export.addActionListener(e -> {
 				if (!hasSelection)
 					return;
@@ -432,7 +432,7 @@ public class ModernGUI extends GUI {
 		}
 		JLabel sub = new JLabel(preview);
 		sub.setFont(Theme.SMALL);
-		sub.setForeground(selected ? new Color(0xE0E7FF) : Theme.SIDEBAR_TXT);
+		sub.setForeground(selected ? new Color(0xD5ECE7) : Theme.SIDEBAR_TXT);
 		text.add(title);
 		text.add(Box.createVerticalStrut(2));
 		text.add(sub);

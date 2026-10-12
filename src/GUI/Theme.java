@@ -29,18 +29,18 @@ public final class Theme {
 	private Theme() {}
 
 	// Palette
-	public static final Color BG          = new Color(0xF4F5FB);
+	public static final Color BG          = new Color(0xF1F5F4);
 	public static final Color SURFACE     = Color.WHITE;
-	public static final Color SIDEBAR     = new Color(0x1E1B4B);
-	public static final Color SIDEBAR_HI  = new Color(0x312E81);
-	public static final Color SIDEBAR_TXT = new Color(0xC7D2FE);
-	public static final Color ACCENT      = new Color(0x6366F1);
-	public static final Color ACCENT_DARK = new Color(0x4F46E5);
-	public static final Color TEXT        = new Color(0x111827);
-	public static final Color MUTED       = new Color(0x6B7280);
-	public static final Color BORDER      = new Color(0xE5E7EB);
-	public static final Color BUBBLE_THEM = new Color(0xEEF0F6);
-	public static final Color AUDIT       = new Color(0xF59E0B);
+	public static final Color SIDEBAR     = new Color(0x0F2A27);
+	public static final Color SIDEBAR_HI  = new Color(0x1B403B);
+	public static final Color SIDEBAR_TXT = new Color(0xB9D3CD);
+	public static final Color ACCENT      = new Color(0x0E7C6B);
+	public static final Color ACCENT_DARK = new Color(0x0A6153);
+	public static final Color TEXT        = new Color(0x10201D);
+	public static final Color MUTED       = new Color(0x51645F);
+	public static final Color BORDER      = new Color(0xD8E2DF);
+	public static final Color BUBBLE_THEM = new Color(0xFFFFFF);
+	public static final Color AUDIT       = new Color(0xC26A06);
 
 	// Fonts
 	public static final Font TITLE = new Font("SansSerif", Font.BOLD, 26);
@@ -140,7 +140,7 @@ public final class Theme {
 	}
 
 	public static JButton secondary(String text) {
-		return button(text, new Color(0xE0E7FF), ACCENT_DARK);
+		return button(text, new Color(0xD5ECE7), TEXT);
 	}
 
 	public static JTextField field(int cols) {
@@ -191,8 +191,8 @@ public final class Theme {
 	/** Deterministic avatar color per name. */
 	public static Color colorFor(String name) {
 		Color[] palette = {
-			new Color(0x6366F1), new Color(0xEC4899), new Color(0x14B8A6),
-			new Color(0xF59E0B), new Color(0x8B5CF6), new Color(0x0EA5E9)
+			new Color(0x0E7C6B), new Color(0xB4532A), new Color(0x5B5BD6),
+			new Color(0xA3366F), new Color(0x2F6FA3), new Color(0x7A6A12)
 		};
 		int h = name == null ? 0 : Math.abs(name.hashCode());
 		return palette[h % palette.length];

@@ -2,101 +2,115 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Communication System Demo</title>
 <meta name="description" content="Interactive browser demo of a CS 401 Java chat client, with a slider to compare the original (classic) UI and an AI-generated modern UI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-modern">
 <header class="topbar">
   <div class="brand">
-    <span class="logo">C</span>
-    <div>
+    <span class="logo" aria-hidden="true">CS</span>
+    <div class="brand-text">
       <strong>Communication System</strong>
       <small>CS 401 group project · interactive UI demo</small>
     </div>
   </div>
-  <label class="switch-wrap" title="Switch between the original and the modern UI">
+  <label class="switch-wrap" for="themeSwitch" title="Switch between the original and the modern UI">
     <span class="lbl lbl-classic">Classic</span>
-    <input type="checkbox" id="themeSwitch" checked aria-label="Use modern UI">
+    <input type="checkbox" id="themeSwitch" checked>
     <span class="switch" aria-hidden="true"><span class="knob"></span></span>
     <span class="lbl lbl-modern">Modern</span>
   </label>
-  <a class="gh" href="https://github.com/Denilson15/Communication-System-Modern-UI" target="_blank" rel="noopener">GitHub ↗</a>
+  <a class="gh" href="https://github.com/Denilson15/Communication-System-Modern-UI" target="_blank" rel="noopener">View source on GitHub</a>
 </header>
 
 <p class="notice">
-  Demo only: this page is a browser recreation of the Java Swing client and uses <b>fake, in-memory data</b>.
-  The real app is a Java desktop client plus a TCP socket server. <b>Classic</b> mirrors the original student-built UI;
-  <b>Modern</b> is an AI-generated restyle.
+  This page recreates the Java Swing client in the browser with <b>sample data</b>. It does not connect to the real
+  server, which runs over TCP on port 59090. <b>Classic</b> matches the original student-built interface.
+  <b>Modern</b> is an AI-generated redesign made after the project was submitted.
 </p>
 
 <main class="stage">
   <!-- LOGIN -->
-  <section id="login" class="window login">
-    <div class="login-card">
-      <span class="avatar big" style="--c:#6366F1">C</span>
+  <section id="login" class="window login" aria-label="Login">
+    <form id="loginForm" class="login-card">
       <h1 class="welcome">Welcome</h1>
-      <p class="sub">Sign in to continue chatting</p>
+      <p class="sub">Sign in to your chat account</p>
       <label class="field-lbl" for="u">Username</label>
-      <input id="u" class="field" autocomplete="off" placeholder="Try 1, 2, 3 … or it">
+      <input id="u" class="field" autocomplete="off" value="1">
       <label class="field-lbl" for="p">Password</label>
-      <input id="p" class="field" type="password" placeholder="Same as username">
-      <label class="check"><input type="checkbox" id="itBox"> Create as IT account</label>
-      <button id="loginBtn" class="btn primary">Login</button>
-      <button id="createBtn" class="btn secondary">Create Account</button>
-      <p class="hint">Demo accounts: <b>1</b>–<b>5</b> (password = username) · IT account: <b>it</b> / <b>it</b></p>
-    </div>
+      <input id="p" class="field" type="password" value="1">
+      <label class="check" for="itBox"><input type="checkbox" id="itBox"> Create as IT account</label>
+      <button id="loginBtn" class="btn primary" type="submit">Login</button>
+      <button id="createBtn" class="btn secondary" type="button">Create Account</button>
+      <p class="hint">Sample accounts: <code>1</code> to <code>5</code>, password same as username. IT staff: <code>it</code> / <code>it</code></p>
+    </form>
   </section>
 
   <!-- MAIN -->
-  <section id="app" class="window app" hidden>
+  <section id="app" class="window app" aria-label="Chat client" hidden>
     <aside class="sidebar">
       <div class="side-top">
         <h2 class="side-title" id="sideTitle">Chats</h2>
-        <button id="newChatBtn" class="btn primary side-action">Create New Chat</button>
+        <button id="newChatBtn" class="btn primary side-action" type="button">Create New Chat</button>
       </div>
       <div id="chatList" class="chat-list"></div>
-      <div id="profile" class="profile" tabindex="0">
+      <div id="profile" class="profile" role="button" tabindex="0" aria-haspopup="menu">
         <span class="avatar" id="meAvatar"></span>
-        <div>
+        <div class="me">
           <div class="me-name" id="meName"></div>
           <div class="me-sub" id="meSub">view profile</div>
         </div>
-        <div id="profileMenu" class="menu" hidden></div>
+        <div id="profileMenu" class="menu" role="menu" hidden></div>
       </div>
     </aside>
     <section class="conv">
       <div class="conv-head">
-        <button id="backBtn" class="back" aria-label="Back to chats">‹</button>
+        <button id="backBtn" class="back" type="button" aria-label="Back to chats">‹</button>
         <div class="titles">
           <div id="convTitle" class="conv-title">Select a chat</div>
-          <div id="convSub" class="conv-sub">Pick a conversation from the left</div>
+          <div id="convSub" class="conv-sub">No chat selected</div>
         </div>
         <div class="head-actions">
-          <button id="manageBtn" class="btn secondary" hidden>Manage</button>
-          <div id="manageMenu" class="menu right" hidden>
-            <button data-act="add">Add people to chat</button>
-            <button data-act="remove">Remove user from chat</button>
+          <button id="manageBtn" class="btn secondary" type="button" hidden>Manage</button>
+          <div id="manageMenu" class="menu right" role="menu" hidden>
+            <button type="button" data-act="add">Add people to chat</button>
+            <button type="button" data-act="remove">Remove user from chat</button>
           </div>
         </div>
       </div>
-      <div id="messages" class="messages"></div>
+      <div id="messages" class="messages" aria-live="polite"></div>
       <form id="composer" class="composer">
-        <input id="msgInput" class="field" placeholder="Type a message…" autocomplete="off">
-        <button class="btn primary">Send</button>
+        <label class="sr-only" for="msgInput">Message</label>
+        <input id="msgInput" class="field" placeholder="Write a message" autocomplete="off">
+        <button class="btn primary" type="submit">Send</button>
       </form>
       <div id="auditBar" class="composer audit" hidden>
         <span>Read-only audit view</span>
-        <button id="exportBtn" class="btn audit-btn">Export</button>
+        <button id="exportBtn" class="btn audit-btn" type="button">Export</button>
       </div>
     </section>
   </section>
 </main>
 
-<div id="toast" class="toast" hidden></div>
+<!-- In-page replacement for JOptionPane dialogs -->
+<div id="dialog" class="dialog-backdrop" hidden>
+  <form id="dialogForm" class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <div id="dialogTitle" class="dialog-title"></div>
+    <label id="dialogLabel" class="dialog-label" for="dialogInput"></label>
+    <input id="dialogInput" class="field" autocomplete="off">
+    <div class="dialog-actions">
+      <button id="dialogCancel" class="btn secondary" type="button">Cancel</button>
+      <button id="dialogOk" class="btn primary" type="submit">OK</button>
+    </div>
+  </form>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
 <script src="app.js"></script>
 </body>
 </html>

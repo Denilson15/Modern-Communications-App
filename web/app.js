@@ -4,7 +4,7 @@
   "use strict";
 
   const $ = (id) => document.getElementById(id);
-  const COLORS = ["#6366F1", "#EC4899", "#14B8A6", "#F59E0B", "#8B5CF6", "#0EA5E9"];
+  const COLORS = ["#0E7C6B", "#B4532A", "#5B5BD6", "#A3366F", "#2F6FA3", "#7A6A12"];
 
   // ---------------------------------------------------------------- fake data
   const minsAgo = (m) => new Date(Date.now() - m * 60000);
@@ -50,7 +50,7 @@
     document.body.classList.toggle("theme-modern", modern);
     document.body.classList.toggle("theme-classic", !modern);
     $("newChatBtn").textContent = audit ? (modern ? "Select user to audit" : "Select User")
-                                        : (modern ? "New chat" : "Create New Chat");
+                                        : (modern ? "+ New chat" : "Create New Chat");
     $("exportBtn").textContent = modern ? "Export chat log" : "Export";
     $("loginBtn").textContent = modern ? "Log in" : "Login";
     try { localStorage.setItem("cs-theme", modern ? "modern" : "classic"); } catch (e) { /* ignore */ }
@@ -96,15 +96,36 @@
     toastTimer = setTimeout(() => (t.hidden = true), 2600);
   }
 
+  // In-page stand-in for JOptionPane.showInputDialog (browser prompt() is not used).
+  function ask(title, label) {
+    return new Promise((resolve) => {
+      const box = $("dialog"), input = $("dialogInput");
+      $("dialogTitle").textContent = title;
+      $("dialogLabel").textContent = label;
+      input.value = "";
+      box.hidden = false;
+      input.focus();
+      const done = (value) => {
+        box.hidden = true;
+        $("dialogForm").onsubmit = $("dialogCancel").onclick = box.onkeydown = null;
+        resolve(value);
+      };
+      $("dialogForm").onsubmit = (e) => { e.preventDefault(); done(input.value); };
+      $("dialogCancel").onclick = () => done(null);
+      box.onkeydown = (e) => { if (e.key === "Escape") done(null); };
+    });
+  }
+
   // -------------------------------------------------------------------- login
   function credentials() {
     return { u: $("u").value.trim(), p: $("p").value, it: $("itBox").checked };
   }
-  $("loginBtn").addEventListener("click", () => {
+  $("loginForm").addEventListener("submit", (e) => {
+    e.preventDefault();
     const { u, p } = credentials();
     const acct = accounts[u];
     if (!acct || acct.password !== p) {
-      alert("Login failed! Invalid username/password, or the User is already online!");
+      toast("Login failed. Check the username and password, or try 1 / 1.");
       return;
     }
     me = viewing = u;
@@ -114,15 +135,14 @@
     $("app").hidden = false;
     applyTheme(modern());
   });
-  $("p").addEventListener("keydown", (e) => { if (e.key === "Enter") $("loginBtn").click(); });
   $("createBtn").addEventListener("click", () => {
     const { u, p, it } = credentials();
     if (u.length < 6 || p.length < 6 || accounts[u]) {
-      alert("Please provide a unique username. Username and password must be a minimum of 6 characters in length.");
+      toast("Use a unique username. Username and password need at least 6 characters.");
       return;
     }
     accounts[u] = { password: p, it };
-    alert("Your account was successfully created. Please try logging in!");
+    toast("Account created. You can log in now.");
   });
 
   // ------------------------------------------------------------------- render
@@ -134,7 +154,7 @@
     ma.style.setProperty("--c", colorFor(me));
     ma.textContent = me.charAt(0).toUpperCase();
     $("meSub").textContent = modern()
-      ? (audit ? "Auditing " + viewing + " · options" : (accounts[me].it ? "IT staff · options" : "Click for options"))
+      ? (audit ? "auditing " + viewing + " · localhost:59090" : "connected · localhost:59090")
       : "view profile";
     $("composer").hidden = audit;
     $("auditBar").hidden = !audit;
@@ -159,14 +179,20 @@
       b.appendChild(avatar(name));
       const txt = document.createElement("div");
       txt.className = "ci-text";
-      const n = document.createElement("div");
+      const top = document.createElement("div");
+      top.className = "ci-top";
+      const n = document.createElement("span");
       n.className = "ci-name";
       n.textContent = name;
+      const t = document.createElement("span");
+      t.className = "ci-time";
+      top.append(n, t);
       const p = document.createElement("div");
       p.className = "ci-prev";
       const last = chat.messages[chat.messages.length - 1];
-      p.textContent = last ? `${last.user}: ${last.text}` : "No messages yet";
-      txt.append(n, p);
+      p.textContent = last ? `${last.user === viewing ? "You" : last.user}: ${last.text}` : "No messages yet";
+      t.textContent = last ? fmtTime(last.time) : "";
+      txt.append(top, p);
       b.appendChild(txt);
       b.addEventListener("click", () => {
         currentChat = chat.id;
@@ -185,13 +211,13 @@
     if (!chat || !chat.members.includes(viewing)) {
       currentChat = -1;
       $("convTitle").textContent = "Select a chat";
-      $("convSub").textContent = "Pick a conversation from the left";
+      $("convSub").textContent = "No chat selected";
       $("manageBtn").hidden = true;
-      box.innerHTML = '<div class="placeholder"><big>💬</big>Select a conversation to start chatting</div>';
+      box.innerHTML = '<div class="placeholder"><strong>No chat open</strong>Choose a conversation on the left, or start a new one.</div>';
       return;
     }
     $("convTitle").textContent = modern() ? chatName(chat, viewing) : "Chat ID: " + chat.id;
-    $("convSub").textContent = `${chat.members.length} members · Chat #${chat.id}`;
+    $("convSub").textContent = `chat #${chat.id} · ${chat.members.length} members · created by ${chat.creator}`;
     // Same rule as the original: menu only for the creator of a chat with more than 2 members
     $("manageBtn").hidden = audit || chat.creator !== me || chat.members.length <= 2;
 
@@ -199,7 +225,8 @@
     chat.messages.forEach((m) => {
       const mine = m.user === viewing;
       const row = document.createElement("div");
-      row.className = "msg" + (mine ? " mine" : "") + (m.user !== prev ? " first" : "");
+      row.className = "msg" + (mine ? " mine" : "") + (m.user !== prev ? " first" : "") + (m.isNew ? " new" : "");
+      m.isNew = false;
       row.appendChild(avatar(m.user, "sm" + (m.user === prev ? " ghost" : "")));
       const wrap = document.createElement("div");
       wrap.className = "bubble-wrap";
@@ -226,22 +253,22 @@
     const chat = chatById(currentChat);
     input.value = "";
     if (!chat || !text.trim()) return;
-    chat.messages.push({ user: me, text, time: new Date() });
+    chat.messages.push({ user: me, text, time: new Date(), isNew: true });
     render();
     // Simulated reply from another member so the demo feels alive
     const others = chat.members.filter((m) => m !== me);
     if (others.length) {
       setTimeout(() => {
         const from = others[Math.floor(Math.random() * others.length)];
-        chat.messages.push({ user: from, text: replies[Math.floor(Math.random() * replies.length)], time: new Date() });
+        chat.messages.push({ user: from, text: replies[Math.floor(Math.random() * replies.length)], time: new Date(), isNew: true });
         if (me) render();
       }, 1200 + Math.random() * 1200);
     }
   });
 
-  $("newChatBtn").addEventListener("click", () => {
+  $("newChatBtn").addEventListener("click", async () => {
     if (audit) {
-      const u = prompt("Enter username:");
+      const u = await ask("Select User", "Enter the username to audit:");
       if (!u || !u.trim()) return;
       if (!accounts[u.trim()]) { toast("No such user: " + u.trim()); return; }
       viewing = u.trim();
@@ -249,7 +276,7 @@
       render();
       return;
     }
-    const input = prompt("Enter usernames separated by commas:");
+    const input = await ask("Create New Chat", "Enter usernames separated by commas:");
     if (input == null) return;
     const names = [...new Set(input.split(",").map((s) => s.trim()).filter((s) => s && s !== me))];
     const bad = names.filter((n) => !accounts[n]);
@@ -265,12 +292,13 @@
     e.stopPropagation();
     $("manageMenu").hidden = !$("manageMenu").hidden;
   });
-  $("manageMenu").addEventListener("click", (e) => {
+  $("manageMenu").addEventListener("click", async (e) => {
     const act = e.target.dataset.act;
     const chat = chatById(currentChat);
     $("manageMenu").hidden = true;
     if (!act || !chat) return;
-    const u = (prompt(act === "add" ? "Enter username to add:" : "Enter username to remove:") || "").trim();
+    const u = ((await ask(act === "add" ? "Add people to chat" : "Remove user from chat",
+      act === "add" ? "Enter username to add:" : "Enter username to remove:")) || "").trim();
     if (!u) return;
     if (act === "add") {
       if (!accounts[u] || chat.members.includes(u)) { toast("Failed to add user."); return; }
@@ -284,6 +312,7 @@
     render();
   });
 
+  $("profile").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("profile").click(); } });
   $("profile").addEventListener("click", (e) => {
     if (e.target.closest(".menu")) return;
     e.stopPropagation();
@@ -324,7 +353,7 @@
     a.download = `chat_${chat.id}.txt`;
     a.click();
     URL.revokeObjectURL(a.href);
-    toast("Chat log exported");
+    toast(`Exported chat_${chat.id}.txt`);
   });
 
   $("backBtn").addEventListener("click", () => $("app").classList.remove("show-conv"));
