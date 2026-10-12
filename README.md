@@ -1,6 +1,6 @@
 # Communication System
 
-> **Live UI demo:** https://denilson15.github.io/Communication-System-Modern-UI/
+> **Live UI demo:** https://denilson15.github.io/Modern-Communications-App/
 > Use the **Classic ⟷ Modern** slider at the top to compare the original interface with the AI-generated redesign.
 
 This repository is a personal copy of our **CS 401: Software Engineering** group project.
@@ -83,7 +83,7 @@ java -cp bin GUI.Launcher [server-ip]   # terminal 2
 ```
 
 ### About the web demo
-The original app is a Java Swing desktop client that talks to a Java server over raw TCP sockets, so it can't run in a browser as-is. The [live demo](https://denilson15.github.io/Communication-System-Modern-UI/) is a **front-end-only recreation** built with HTML, CSS and JavaScript. It uses fake, in-memory data, so you can click through the UI (login, chats, sending messages, group management, IT audit mode and export) without installing anything. It does not connect to the real Java server.
+The original app is a Java Swing desktop client that talks to a Java server over raw TCP sockets, so it can't run in a browser as-is. The [live demo](https://denilson15.github.io/Modern-Communications-App/) is a **front-end-only recreation** built with HTML, CSS and JavaScript. It uses fake, in-memory data, so you can click through the UI (login, chats, sending messages, group management, IT audit mode and export) without installing anything. It does not connect to the real Java server.
 
 Demo accounts: `1` to `5` (the password is the same as the username). IT account: `it` / `it`.
 
