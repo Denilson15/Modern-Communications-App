@@ -25,15 +25,17 @@ The team's original source code in this repo is **unchanged**. Everything added 
 
 ## My contributions
 
-From the original repository's commit history. I'm the second-largest contributor, with about 88 of roughly 270 commits. My work was mainly on the networking layer and on connecting it to the GUI:
+My part was the **networking foundation** that the rest of the system runs on:
 
-- **Client/server foundation:** wrote the starter code for the client and server, and the message protocol (`Message`, `MainType`, `SubType`, `Status`) that every operation uses.
-- **Server and client operations:** implemented most of the request handling in `Server`, `ClientHandler` and `Client`: login, logout, account creation, creating group chats, and delivering messages to multiple users.
-- **User login module:** created and implemented `UserLoginModule`.
-- **GUI integration:** connected the Swing GUI to the client for login, account creation, chat creation, adding and removing chat members, and logging out when the window closes.
-- **Documentation:** contributed to the Software Requirements Specification and the early requirements docs.
+- **Concurrent server:** the connection loop in `Server` that accepts clients and starts a separate thread for each one, so many users can be connected at once.
+- **Message protocol and dispatcher:** the message types (`MainType`, `SubType`, `Status`) and core of `Message`, plus the per-client handler in `ClientHandler` that sets up each connection and routes every request to the right server operation.
+- **Client connection and login:** opening the socket and object streams from the client and the login request flow.
+- **Server operations:** delivering messages to every member of a chat, creating chats (with username validation), and adding and removing chat members.
+- **User login module:** `UserLoginModule`.
+- **GUI integration:** the Create Account flow, connecting to the server on startup, and logging out when the window closes.
+- **Documentation:** co-authored the Software Requirements Specification and the initial design documentation.
 
-My teammates built the chat and user data model, the JUnit test suite, much of the GUI layout, and the design diagrams. See the original repository for the full picture.
+Teammates built the chat data model and file storage, much of the later server logic, the full JUnit test suite, most of the GUI layout, and the user model. See the original repository's history for details.
 
 ---
 
