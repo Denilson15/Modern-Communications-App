@@ -7,7 +7,7 @@ A real-time, multi-user chat system in Java: a TCP socket server, a Swing deskto
 
 ## About this repository
 
-This is my personal copy of a six-person class project. The original team repository, with every contributor's full history, is here:
+This is my personal copy of a five-person class project. The original team repository, with every contributor's full history, is here:
 **https://github.com/Aircc0615/Communication-System-Group-Project**
 
 I made this copy so the project can be **seen without compiling or running anything**:
