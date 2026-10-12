@@ -7,3 +7,4 @@ LocalFiles/*
 .classpath
 .project
 /bin/
+.netlify

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Communication System Demo</title>
+<meta name="description" content="Interactive browser demo of a CS 401 Java chat client, with a slider to compare the original (classic) UI and an AI-generated modern UI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-modern">
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">C</span>
+    <div>
+      <strong>Communication System</strong>
+      <small>CS 401 group project · interactive UI demo</small>
+    </div>
+  </div>
+  <label class="switch-wrap" title="Switch between the original and the modern UI">
+    <span class="lbl lbl-classic">Classic</span>
+    <input type="checkbox" id="themeSwitch" checked aria-label="Use modern UI">
+    <span class="switch" aria-hidden="true"><span class="knob"></span></span>
+    <span class="lbl lbl-modern">Modern</span>
+  </label>
+  <a class="gh" href="https://github.com/Denilson15/Communication-System-Modern-UI" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+
+<p class="notice">
+  Demo only: this page is a browser recreation of the Java Swing client and uses <b>fake, in-memory data</b>.
+  The real app is a Java desktop client plus a TCP socket server. <b>Classic</b> mirrors the original student-built UI;
+  <b>Modern</b> is an AI-generated restyle.
+</p>
+
+<main class="stage">
+  <!-- LOGIN -->
+  <section id="login" class="window login">
+    <div class="login-card">
+      <span class="avatar big" style="--c:#6366F1">C</span>
+      <h1 class="welcome">Welcome</h1>
+      <p class="sub">Sign in to continue chatting</p>
+      <label class="field-lbl" for="u">Username</label>
+      <input id="u" class="field" autocomplete="off" placeholder="Try 1, 2, 3 … or it">
+      <label class="field-lbl" for="p">Password</label>
+      <input id="p" class="field" type="password" placeholder="Same as username">
+      <label class="check"><input type="checkbox" id="itBox"> Create as IT account</label>
+      <button id="loginBtn" class="btn primary">Login</button>
+      <button id="createBtn" class="btn secondary">Create Account</button>
+      <p class="hint">Demo accounts: <b>1</b>–<b>5</b> (password = username) · IT account: <b>it</b> / <b>it</b></p>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <section id="app" class="window app" hidden>
+    <aside class="sidebar">
+      <div class="side-top">
+        <h2 class="side-title" id="sideTitle">Chats</h2>
+        <button id="newChatBtn" class="btn primary side-action">Create New Chat</button>
+      </div>
+      <div id="chatList" class="chat-list"></div>
+      <div id="profile" class="profile" tabindex="0">
+        <span class="avatar" id="meAvatar"></span>
+        <div>
+          <div class="me-name" id="meName"></div>
+          <div class="me-sub" id="meSub">view profile</div>
+        </div>
+        <div id="profileMenu" class="menu" hidden></div>
+      </div>
+    </aside>
+    <section class="conv">
+      <div class="conv-head">
+        <button id="backBtn" class="back" aria-label="Back to chats">‹</button>
+        <div class="titles">
+          <div id="convTitle" class="conv-title">Select a chat</div>
+          <div id="convSub" class="conv-sub">Pick a conversation from the left</div>
+        </div>
+        <div class="head-actions">
+          <button id="manageBtn" class="btn secondary" hidden>Manage</button>
+          <div id="manageMenu" class="menu right" hidden>
+            <button data-act="add">Add people to chat</button>
+            <button data-act="remove">Remove user from chat</button>
+          </div>
+        </div>
+      </div>
+      <div id="messages" class="messages"></div>
+      <form id="composer" class="composer">
+        <input id="msgInput" class="field" placeholder="Type a message…" autocomplete="off">
+        <button class="btn primary">Send</button>
+      </form>
+      <div id="auditBar" class="composer audit" hidden>
+        <span>Read-only audit view</span>
+        <button id="exportBtn" class="btn audit-btn">Export</button>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
