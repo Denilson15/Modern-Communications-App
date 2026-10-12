@@ -65,7 +65,7 @@ For details on using the program, see the Design Specification and the Use Cases
 | `src/GUI/ModernGUI.java` | Modern restyle of the client. It extends the original `GUI` class so it reuses the same `Client`, `User` and `Chat` code: same features, new look. |
 | `src/GUI/Theme.java` | Colors, fonts and custom-painted rounded components. Pure Swing, no libraries. |
 | `web/` | Static browser recreation of the client for the live demo, with the Classic/Modern slider. |
-| `.github/workflows/pages.yml`, `netlify.toml` | Hosting configuration for the web demo. |
+| `index.html`, `.nojekyll`, `netlify.toml` | Hosting setup for the web demo (GitHub Pages serves the repo root and `index.html` forwards to `web/`). |
 | `docs/screenshots/` | Screenshots used in this README. |
 
 ### Running the modern desktop UI
